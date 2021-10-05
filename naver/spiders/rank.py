@@ -12,6 +12,7 @@ key_set = []
 url_set1 = []
 url_set2 = []
 text_set = []
+image_set = []
 i = 0
 a = 0
 
@@ -61,19 +62,26 @@ class rank(scrapy.Spider):
         item = NaverItem()
         if response.xpath('//*[@id="articleBodyContents"]/text()').extract() != []:
             text=response.xpath('//*[@id="articleBodyContents"]/text()').extract()
+            image=response.xpath('//*[@id="articleBodyContents"]/span[1]/img/@src').extract()
             text_set.append(text)
+            image_set.append(image)
         elif response.xpath('//*[@id="articeBody"]/text()').extract() != []:
             text=response.xpath('//*[@id="articeBody"]/text()').extract()
+            image=response.xpath('//*[@id="img1"]/@src').extract()
             text_set.append(text)
+            image_set.append(image)
         elif response.xpath('//*[@id="newsEndContents"]/text()').extract() != []:
             text=response.xpath('//*[@id="newsEndContents"]/text()').extract()
+            image = response.xpath('//*[@id="newsEndContents"]/span/img/@src').extract()
             text_set.append(text)
+            image_set.append(image)
         
         global i
         item['rank']=rank_set[i]
         item['key']=key_set[i]
         item['url']=url_set2[i]
         item['text']=text_set[i]
+        item['image']=image_set[i]
         i = i+1
         return item
 
