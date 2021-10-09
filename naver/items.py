@@ -11,5 +11,6 @@ class NaverItem(scrapy.Item):
     key = scrapy.Field()
     url = scrapy.Field()
     rank = scrapy.Field()
-    image = scrapy.Field()
+    img_url = scrapy.Field()
+    related = scrapy.Field()
     
