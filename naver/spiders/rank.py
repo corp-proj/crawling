@@ -109,7 +109,7 @@ class rank(scrapy.Spider):
                 pass
             else:
                 text_set[i][l] = re.sub('\t','',text_set[i][l])
-                new_text = new_text + text_set[i][l]
+                new_text = new_text + ' '+ text_set[i][l]
         item['text']=new_text
         item['img_url']=image_set[i]
         i = i+1
