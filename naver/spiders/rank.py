@@ -71,27 +71,32 @@ class rank(scrapy.Spider):
         item = NaverItem()
         if response.xpath('//*[@id="articleBodyContents"]/text()').extract() != []:
             text=response.xpath('//*[@id="articleBodyContents"]/text()').extract()
+            text_set.append(text)
             if response.xpath('//*[@id="articleBodyContents"]/span[1]/img/@src').extract() != []:
                 image=response.xpath('//*[@id="articleBodyContents"]/span[1]/img/@src').extract()
+                for y in image:
+                    image_set.append(y)
+            elif response.xpath('//*[@id="articleBodyContents"]/div/div/span[1]/img/@src').extract() != []:
+                image=response.xpath('//*[@id="articleBodyContents"]/div/div/span[1]/img/@src').extract()
                 for y in image:
                     image_set.append(y)
             elif response.xpath('//*[@id="articleBodyContents"]/table/tbody/tr/td/table/tbody/tr[1]/td/span/img/@src').extract() != []:
                 image=response.xpath('//*[@id="articleBodyContents"]/table/tbody/tr/td/table/tbody/tr[1]/td/span/img/@src').extract()
                 for y in image:
                     image_set.append(y)                
-            text_set.append(text)
         elif response.xpath('//*[@id="articeBody"]/text()').extract() != []:
             text=response.xpath('//*[@id="articeBody"]/text()').extract()
-            image=response.xpath('//*[@id="img1"]/@src').extract()
             text_set.append(text)
+            image=response.xpath('//*[@id="img1"]/@src').extract()
             for y in image:
                 image_set.append(y)
         elif response.xpath('//*[@id="newsEndContents"]/text()').extract() != []:
             text=response.xpath('//*[@id="newsEndContents"]/text()').extract()
-            image = response.xpath('//*[@id="newsEndContents"]/span/img/@src').extract()
             text_set.append(text)
+            image = response.xpath('//*[@id="newsEndContents"]/span/img/@src').extract()
             for y in image:
                 image_set.append(y)
+            
         
         item = NaverItem()
         global i

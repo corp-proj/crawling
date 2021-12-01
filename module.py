@@ -3,7 +3,7 @@ import json
 import datetime
 
 def execute():
-    os.system("scrapy crawl cr -o 4.json")
+    os.system("scrapy crawl cr -o b.json")
 
 def read():
     with open('a.json',encoding='utf-8') as json_file:
