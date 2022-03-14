@@ -10,4 +10,6 @@ class NaverItem(scrapy.Item):
     text = scrapy.Field()
     url = scrapy.Field()
     img_url = scrapy.Field()
+    title = scrapy.Field()
+    uri = scrapy.Field()
     

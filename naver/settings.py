@@ -16,7 +16,7 @@ NEWSPIDER_MODULE = 'naver.spiders'
 FEED_EXPORT_ENCODING = 'utf-8'
 
 # output sequence
-FEED_EXPORT_FIELDS=['rank','key','related','url','img_url','text']
+FEED_EXPORT_FIELDS=['uri','img_url','url','title','text']
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'naver (+http://www.yourdomain.com)'

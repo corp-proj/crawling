@@ -10,10 +10,12 @@ import re
 
 key_set = []
 url_set1 = []
-url_set2 = []
 text_set = []
 new_text_set = []
 image_set = []
+title_set = []
+p = 0
+a = 0
 
 class rank(scrapy.Spider):
     name = "cr"
@@ -26,24 +28,34 @@ class rank(scrapy.Spider):
         yield scrapy.Request(f'https://search.naver.com/search.naver?where=news&sm=tab_jum&query={self.keyword}',callback=self.parse_page_url, dont_filter=True)
 
     def parse_page_url(self, response):
-        for i in range (1,100):
+        for i in range (1,500):
             a = '//*[@id="sp_nws'+str(i)+'"]'
-            if response.xpath(a+'/div[1]/div/div[1]/div/a[2]/@href').extract() != []:
-                url = response.xpath(a+'/div[1]/div/div[1]/div/a[2]/@href').extract()
-                break
-        for i in url:
-            url_set2.append(i)
-            yield scrapy.Request(i, callback=self.get_url, dont_filter=True)
-        
+            if response.xpath(a+'/div[1]/div/div[1]/div[2]/a[2]/@href').extract() != []:
+                url = response.xpath(a+'/div[1]/div/div[1]/div[2]/a[2]/@href').extract()
+                url_set1.append(url[0])
+                if len(url_set1)==7:
+                    break
+        j = 7
+        for o in url_set1:
+            yield scrapy.Request(o, callback=self.get_url, dont_filter=True, priority=j)
+            j -= 1
+
     def get_url(self, response):
-        url = url_set2[0]
-        yield scrapy.Request(url, callback=self.parse_page_text, dont_filter=True)
+        l = 7
+        global a
+        url = url_set1[a]
+        a = a+1
+        yield scrapy.Request(url, callback=self.parse_page_text, dont_filter=True,priority=l)
+        l = l-1
 
     def parse_page_text(self, response):
         item = NaverItem()
         if response.xpath('//*[@id="articleBodyContents"]/text()').extract() != []:
             text=response.xpath('//*[@id="articleBodyContents"]/text()').extract()
             text_set.append(text)
+            title = response.xpath('//*[@id="articleTitle"]/text()').extract()
+            for t in title:
+                title_set.append(t)
             if response.xpath('//*[@id="articleBodyContents"]/span[1]/img/@src').extract() != []:
                 image=response.xpath('//*[@id="articleBodyContents"]/span[1]/img/@src').extract()
                 for y in image:
@@ -55,31 +67,41 @@ class rank(scrapy.Spider):
             elif response.xpath('//*[@id="articleBodyContents"]/table/tbody/tr/td/table/tbody/tr[1]/td/span/img/@src').extract() != []:
                 image=response.xpath('//*[@id="articleBodyContents"]/table/tbody/tr/td/table/tbody/tr[1]/td/span/img/@src').extract()
                 for y in image:
-                    image_set.append(y)                
+                    image_set.append(y)
+            else:
+                image_set.append('None')
         elif response.xpath('//*[@id="articeBody"]/text()').extract() != []:
             text=response.xpath('//*[@id="articeBody"]/text()').extract()
             text_set.append(text)
+            title = response.xpath('//*[@id="content"]/div[1]/div/h2/text()').extract()
+            for t in title:
+                title_set.append(t)
             image=response.xpath('//*[@id="img1"]/@src').extract()
             for y in image:
                 image_set.append(y)
         elif response.xpath('//*[@id="newsEndContents"]/text()').extract() != []:
             text=response.xpath('//*[@id="newsEndContents"]/text()').extract()
             text_set.append(text)
+            title = response.xpath('//*[@id="content"]/div/div[1]/div/div[1]/h4/text()').extract()
+            for t in title:
+                title_set.append(t)
             image = response.xpath('//*[@id="newsEndContents"]/span/img/@src').extract()
             for y in image:
                 image_set.append(y)
 
-
-        item['url']=url_set2[0]
+        global p
+        item['url']=url_set1[p]
+        item['title']=title_set[p]
         new_text = ''
-        for l in range(len(text_set[0])):
-            if "\n" in text_set[0][l]:
+        for l in range(len(text_set[p])):
+            if "\n" in text_set[p][l]:
                 pass
             else:
-                text_set[0][l] = re.sub('\t','',text_set[0][l])
-                new_text = new_text + ' '+ text_set[0][l]
+                text_set[p][l] = re.sub('\t','',text_set[p][l])
+                new_text = new_text + ' '+ text_set[p][l]
         item['text']=new_text
-        item['img_url']=image_set[0]
+        item['img_url']=image_set[p]
+        p += 1
         return item
 
     def spider_results():

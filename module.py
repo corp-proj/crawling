@@ -7,6 +7,7 @@ from konlpy.tag import Okt
 import urllib
 import pandas as pd
 
+# return list 안에 dict
 def execute(key):
     os.system("scrapy crawl cr -o a.json -a keyword="+str(key))
     with open('a.json',encoding='utf-8') as json_file:
@@ -16,9 +17,9 @@ def execute(key):
     return data
 
 
-def test_related_keyword_w2v(keyword):
+# keyword, text 둘다 string
+def related_keyword_w2v(keyword, text):
     # 10번 돌리기
-    text = execute(keyword)[0]['text']
     list1 = []
     data_list = []
     list1.append(text)
