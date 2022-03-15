@@ -49,6 +49,6 @@ def related_keyword_w2v(keyword, text):
             relative_keywords = model.wv.most_similar(keyword)
             # model.wv.vectors.shape  # shape 보기
         except:
-            return '키워드와 기사가 무관합니다.'
+            return []
 
         return related_keyword_w2v
