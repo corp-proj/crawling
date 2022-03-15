@@ -46,9 +46,7 @@ def related_keyword_w2v(keyword, text):
         try:
             # w2v 돌리기
             model = Word2Vec(sentences=tokenized_data, vector_size=100, window=5, min_count=5, workers=4, sg=0)
-            relative_keywords = model.wv.most_similar(keyword)
+            return model.wv.most_similar(keyword)
             # model.wv.vectors.shape  # shape 보기
         except:
             return []
-
-        return related_keyword_w2v
