@@ -43,11 +43,12 @@ def related_keyword_w2v(keyword, text):
             temp_X = okt.morphs(sentence, stem=True)  # 토큰화
             temp_X = [word for word in temp_X if not word in stopwords]  # 불용어 제거
             tokenized_data.append(temp_X)
+        try:
+            # w2v 돌리기
+            model = Word2Vec(sentences=tokenized_data, vector_size=100, window=5, min_count=5, workers=4, sg=0)
+            relative_keywords = model.wv.most_similar(keyword)
+            # model.wv.vectors.shape  # shape 보기
+        except:
+            return '키워드와 기사가 무관합니다.'
 
-        # w2v 돌리기
-        model = Word2Vec(sentences=tokenized_data, vector_size=100, window=5, min_count=5, workers=4, sg=0)
-        # model.wv.vectors.shape  # shape 보기
-
-        # 테스팅
-        return model.wv.most_similar(keyword)
-
+        return related_keyword_w2v
